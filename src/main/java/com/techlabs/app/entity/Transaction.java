@@ -26,7 +26,7 @@ public class Transaction {
 	private LocalDateTime date;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "account_number")
+	@JoinColumn(name = "accountNumber")
 	@JsonIgnore
 	private Account senderAccount;
 	
@@ -41,19 +41,6 @@ public class Transaction {
 
 	public Transaction() {
 		super();
-	}
-
-	public Transaction(int id, String type, LocalDateTime date, Account senderAccount, int receiverAccount, int amount,
-			int sender_balance, int receiver_balance) {
-		super();
-		this.id = id;
-		this.type = type;
-		this.date = date;
-		this.senderAccount = senderAccount;
-		this.receiverAccount = receiverAccount;
-		this.amount = amount;
-		this.senderBalance = sender_balance;
-		this.receiverBalance = receiver_balance;
 	}
 
 	public int getId() {
@@ -84,16 +71,16 @@ public class Transaction {
 		return senderAccount;
 	}
 
-	public void setSenderAccount(Account sender_account) {
-		this.senderAccount = sender_account;
+	public void setSenderAccount(Account senderAccount) {
+		this.senderAccount = senderAccount;
 	}
 
 	public int getReceiverAccount() {
 		return receiverAccount;
 	}
 
-	public void setReceiverAccount(int receiver_account) {
-		this.receiverAccount = receiver_account;
+	public void setReceiverAccount(int receiverAccount) {
+		this.receiverAccount = receiverAccount;
 	}
 
 	public int getAmount() {
@@ -108,16 +95,29 @@ public class Transaction {
 		return senderBalance;
 	}
 
-	public void setSenderBalance(int sender_balance) {
-		this.senderBalance = sender_balance;
+	public void setSenderBalance(int senderBalance) {
+		this.senderBalance = senderBalance;
 	}
 
 	public int getReceiverBalance() {
 		return receiverBalance;
 	}
 
-	public void setReceiverBalance(int receiver_balance) {
-		this.receiverBalance = receiver_balance;
+	public void setReceiverBalance(int receiverBalance) {
+		this.receiverBalance = receiverBalance;
+	}
+
+	public Transaction(int id, String type, LocalDateTime date, Account senderAccount, int receiverAccount, int amount,
+			int senderBalance, int receiverBalance) {
+		super();
+		this.id = id;
+		this.type = type;
+		this.date = date;
+		this.senderAccount = senderAccount;
+		this.receiverAccount = receiverAccount;
+		this.amount = amount;
+		this.senderBalance = senderBalance;
+		this.receiverBalance = receiverBalance;
 	}
 
 }

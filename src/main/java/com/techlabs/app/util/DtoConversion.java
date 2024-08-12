@@ -1,7 +1,6 @@
 package com.techlabs.app.util;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 
@@ -10,10 +9,11 @@ import com.techlabs.app.dto.CustomerResponse;
 import com.techlabs.app.dto.MyAccountResponse;
 import com.techlabs.app.dto.TransactionRequest;
 import com.techlabs.app.dto.TransactionResponse;
+import com.techlabs.app.dto.TransferRequest;
+import com.techlabs.app.dto.TransferResponse;
 import com.techlabs.app.entity.Account;
 import com.techlabs.app.entity.Customer;
 import com.techlabs.app.entity.Transaction;
-import com.techlabs.app.exception.ResourceNotFoundException;
 import com.techlabs.app.repository.AccountRepository;
 
 @Component
@@ -30,10 +30,12 @@ public class DtoConversion {
 
 	public AccountResponse convertAccountToResponse(Account account) {
 		AccountResponse accountResponse = new AccountResponse();
-		accountResponse.setAccount_number(account.getAccount_number());
+		accountResponse.setAccount_number(account.getAccountNumber());
 		accountResponse.setBalance(account.getBalance());
 		accountResponse.setCustomer(account.getCustomer());
 		accountResponse.setActive(account.isActive());
+		accountResponse.setBank_details( account.getBank().getId() + " " + account.getBank().getBank_name());
+
 		return accountResponse;
 	}
 
@@ -47,44 +49,57 @@ public class DtoConversion {
 		return customerResponse;
 	}
 
-	public TransactionResponse convertTransactionToResponse(Transaction transaction) {
+	public TransactionResponse convertTransactionToTransactionResponse(Transaction transaction) {
 		TransactionResponse transactionResponse = new TransactionResponse();
 		transactionResponse.setId(transaction.getId());
 		transactionResponse.setType(transaction.getType());
-		transactionResponse.setSender_account(transaction.getSenderAccount());
-		Optional<Account> oAccount = accountRepository.findById(transaction.getReceiverAccount());
-		if(oAccount.isEmpty()) {
-			throw new ResourceNotFoundException("Receiver Account not exists");
-		}
-		Account account = oAccount.get();
-		transactionResponse.setReceiver_account(account);
+		transactionResponse.setAccount(transaction.getSenderAccount());
 		transactionResponse.setAmount(transaction.getAmount());
 		transactionResponse.setDate(transaction.getDate());
 		return transactionResponse;
 	}
 
+	public TransferResponse convertTransactionToTransferResponse(Transaction transaction) {
+		TransferResponse transactionResponse = new TransferResponse();
+		transactionResponse.setId(transaction.getId());
+		transactionResponse.setType(transaction.getType());
+		transactionResponse.setSender(transaction.getSenderAccount());
+		Account receiver = accountRepository.findById(transaction.getReceiverAccount()).get();
+		transactionResponse.setReceiver(receiver);
+		transactionResponse.setAmount(transaction.getAmount());
+		transactionResponse.setDate(transaction.getDate());
+		return transactionResponse;
+	}
 	public MyAccountResponse convertAccountToMyAccount(Account account) {
 		MyAccountResponse myAccount = new MyAccountResponse();
-		myAccount.setAccount_number(account.getAccount_number());
+		myAccount.setAccount_number(account.getAccountNumber());
 		myAccount.setBalance(account.getBalance());
+		myAccount.setBank_details( account.getBank().getId() + " " + account.getBank().getBank_name());
 		return myAccount;
 	}
 
-	public Transaction convertRequestToTransaction(TransactionRequest transactionRequest) {
+	public Transaction convertTransactionRequestToTransaction(String type,TransactionRequest transactionRequest) {
 		Transaction transaction = new Transaction();
-		Account sender = accountRepository.findById(transactionRequest.getSender_account()).get();
+		Account sender = accountRepository.findById(transactionRequest.getAccount()).get();
 		transaction.setAmount(transactionRequest.getAmount());
 		transaction.setDate(LocalDateTime.now());
 		transaction.setSenderAccount(sender);
 		transaction.setSenderBalance(sender.getBalance());
-		if(transactionRequest.getType().equalsIgnoreCase("Transfer")) {
-			Account receiver = accountRepository.findById(transactionRequest.getReceiver_account()).get();
-			transaction.setReceiverAccount(transactionRequest.getReceiver_account());
-			transaction.setReceiverBalance(receiver.getBalance());
-		}
-		transaction.setType(transactionRequest.getType());
+		transaction.setType(type);
 		return transaction;
 	}
 
-	
+	public Transaction convertTransferRequestToTransaction(TransferRequest transferRequest) {
+		Transaction transaction = new Transaction();
+		Account sender = accountRepository.findById(transferRequest.getSender_account()).get();
+		transaction.setAmount(transferRequest.getAmount());
+		transaction.setDate(LocalDateTime.now());
+		transaction.setSenderAccount(sender);
+		transaction.setSenderBalance(sender.getBalance());
+		transaction.setReceiverAccount(transferRequest.getReceiver_account());
+		Account receiver = accountRepository.findById(transaction.getReceiverAccount()).get();
+		transaction.setReceiverBalance(receiver.getBalance());
+		transaction.setType("Transfer");
+		return transaction;
+	}
 }

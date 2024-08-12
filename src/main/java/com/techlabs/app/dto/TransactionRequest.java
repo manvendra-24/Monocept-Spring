@@ -5,13 +5,9 @@ import jakarta.validation.constraints.NotNull;
 
 public class TransactionRequest {
 
-	@NotBlank(message = "Type of Transaction is missing")
-	private String type;
 	
-	@NotBlank(message = "Sender account is missing")
-	private int sender_account;
-	
-	private int receiver_account;
+	@NotNull(message = "Account is missing")
+	private int account;
 	
 	@NotNull(message = "Amount is missing")
 	private int amount;
@@ -20,29 +16,15 @@ public class TransactionRequest {
 		super();
 	}
 
-	public String getType() {
-		return type;
+	public int getAccount() {
+		return account;
 	}
 
-	public void setType(String type) {
-		this.type = type;
+	public void setAccount(int sender_account) {
+		this.account = sender_account;
 	}
 
-	public int getSender_account() {
-		return sender_account;
-	}
-
-	public void setSender_account(int sender_account) {
-		this.sender_account = sender_account;
-	}
-
-	public int getReceiver_account() {
-		return receiver_account;
-	}
-
-	public void setReceiver_account(int receiver_account) {
-		this.receiver_account = receiver_account;
-	}
+	
 
 	public int getAmount() {
 		return amount;
@@ -52,13 +34,11 @@ public class TransactionRequest {
 		this.amount = amount;
 	}
 
-	public TransactionRequest(@NotBlank(message = "Type of Transaction is missing") String type,
-			@NotBlank(message = "Sender account is missing") int sender_account, int receiver_account,
+	public TransactionRequest(
+			@NotBlank(message = "Sender account is missing") int sender_account,
 			@NotNull(message = "Amount is missing") int amount) {
 		super();
-		this.type = type;
-		this.sender_account = sender_account;
-		this.receiver_account = receiver_account;
+		this.account = sender_account;
 		this.amount = amount;
 	}
 

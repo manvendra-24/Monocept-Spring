@@ -8,13 +8,15 @@ public class AccountResponse {
 	private int balance;
 	private Customer customer;
 	private boolean active;
+	private String bank_details;
 	
-	public AccountResponse(int account_number, int balance, Customer customer, boolean active) {
+	public AccountResponse(int account_number, int balance, Customer customer, boolean active, String bank_details) {
 		super();
 		this.account_number = account_number;
 		this.balance = balance;
 		this.customer = customer;
 		this.active = active;
+		this.bank_details = bank_details;
 	}
 
 	public AccountResponse() {
@@ -52,6 +54,16 @@ public class AccountResponse {
 	public void setActive(boolean active) {
 		this.active = active;
 	}
+
+	public String getBank_details() {
+		return bank_details;
+	}
+
+	public void setBank_details(String bank_details) {
+		this.bank_details = bank_details;
+	}
+	
+	
 
 	
 	

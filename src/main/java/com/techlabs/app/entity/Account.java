@@ -23,7 +23,7 @@ public class Account {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int account_number;
+	private int accountNumber;
 	
 	@NotNull(message = "Balance cannot be zero")
 	private int balance;
@@ -32,12 +32,18 @@ public class Account {
 	@JoinColumn(name = "customer_id")
 	@JsonIgnore
 	private Customer customer;
+	
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "bank_id")
+	@JsonIgnore
+	private Bank bank;
 
 	private boolean active;
 	
 	@OneToMany(cascade = {CascadeType.MERGE,CascadeType.PERSIST, CascadeType.REFRESH}, orphanRemoval = true, mappedBy = "senderAccount")
 	@JsonIgnore
 	private List<Transaction> transactions;
+	
 	
 	public boolean isActive() {
 		return active;
@@ -51,12 +57,12 @@ public class Account {
 		super();
 	}
 
-	public int getAccount_number() {
-		return account_number;
+	public int getAccountNumber() {
+		return accountNumber;
 	}
 
-	public void setAccount_number(int account_number) {
-		this.account_number = account_number;
+	public void setAccountNumber(int account_number) {
+		this.accountNumber = account_number;
 	}
 
 	public int getBalance() {
@@ -75,12 +81,23 @@ public class Account {
 		this.customer = customer;
 	}
 
-	public Account(int account_number, int balance, Customer customer, boolean active) {
+	public Bank getBank() {
+		return bank;
+	}
+
+	public void setBank(Bank bank) {
+		this.bank = bank;
+	}
+
+	public Account(int accountNumber, @NotNull(message = "Balance cannot be zero") int balance, Customer customer,
+			Bank bank, boolean active, List<Transaction> transactions) {
 		super();
-		this.account_number = account_number;
+		this.accountNumber = accountNumber;
 		this.balance = balance;
 		this.customer = customer;
+		this.bank = bank;
 		this.active = active;
+		this.transactions = transactions;
 	}
 
 	public List<Transaction> getTransactions() {
@@ -90,6 +107,9 @@ public class Account {
 	public void setTransactions(List<Transaction> transactions) {
 		this.transactions = transactions;
 	}
+
+	
+	
 
 	
 	
